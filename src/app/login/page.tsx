@@ -42,7 +42,7 @@ export default function Login(): ReactElement {
                         必要事項を入力
                     </div>
 
-                    <form onSubmit={() => {LoginAction(nameRef.current?.value ?? '', passwordRef.current?.value ?? '')}} >
+                    <form action={() => {LoginAction(nameRef.current?.value ?? '', passwordRef.current?.value ?? '')}} >
                         <div className="items-center">
                             <input 
                                 type="text"

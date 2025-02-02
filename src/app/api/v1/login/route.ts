@@ -10,12 +10,11 @@ import Session from "@/interface/session";
 import User from "@/interface/user";
 
 export async function POST(req: Request): Promise<Response> {
+    const cookieStore = await cookies();
+
     const data = await req.json(); // { name, password }
     const name: string = data.name;
     const password: string = await sha256(data.password);
-    console.log(name);
-    console.log(data.password);
-    console.log(password);
 
     const userExist: User | undefined = await (async () => {
         const { data, error } = await client
@@ -33,13 +32,39 @@ export async function POST(req: Request): Promise<Response> {
     })();
 
     if (userExist) {
+        const sessionExist: string | undefined = await (async (user: User) => {
+            const userId: string = user.user_id;
+
+            const { data, error } = await client
+                .from('sessions')
+                .select('*')
+                .eq('user_id', userId)
+                .single();
+
+            if (error) return undefined;
+
+            return data.session_token;
+        })(userExist);
+
+        if (sessionExist) {
+            cookieStore.set('session', sessionExist);
+
+            return await ApiResponse(
+                true,
+                'Success to login',
+                {
+                    token: sessionExist
+                }
+            );
+        }
+
         const sessionSuccess: false | string = await (async (user: User) => {
             const session: Session = {
                 session_token: randomUUID().toString(),
                 user_id: user.user_id
             };
 
-            const { data, error } = await client
+            const { error } = await client
                 .from('sessions')
                 .insert(session);
             
@@ -51,7 +76,6 @@ export async function POST(req: Request): Promise<Response> {
         })(userExist);
 
         if (sessionSuccess) {
-            const cookieStore = await cookies();
             cookieStore.set('session', sessionSuccess);
 
             return await ApiResponse(

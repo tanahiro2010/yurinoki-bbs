@@ -34,7 +34,7 @@ export default function Header({ disbleLoginUser = false, disbleNotLoginUser = f
         <>
         <div className="shadow-md mt-3 ml-3 mr-3 px-4 py-4 flex rounded-md justify-between top-0 bg-white items-center fixed left-0 right-0 z-50">
             <div className="text-2xl cursor-pointer hover:underline">
-                <Link href={'/home'}>
+                <Link href={'/'}>
                     YurinokiBBS
                 </Link>
             </div>

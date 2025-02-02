@@ -1,8 +1,9 @@
 'use server';
 
-import { ApiResponse } from "@/lib/response";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { client } from "@/lib/supabase/client";
+
 
 export async function GET(): Promise<Response> {
     const cookieStore = await cookies();
@@ -16,18 +17,10 @@ export async function GET(): Promise<Response> {
             .single();
 
         if (!error) {
-            return await ApiResponse(
-                true,
-                'You logged in',
-                {
-                    user_id: data.user_id
-                }
-            );
-        }
+            return NextResponse.json({ success: true, message: 'You logged in', userId: data.user_id }, { status: 200 })
+            
+        } else return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 
-    return await ApiResponse(
-        false,
-        'You not logged in'
-    );
+    return NextResponse.json({ error: 'Invalid Request' }, { status: 400 });
 }

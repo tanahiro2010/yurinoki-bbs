@@ -1,15 +1,15 @@
 'use server';
 
-import { ApiResponse } from "@/lib/response";
-import { randomUUID } from "crypto";
 import { getUserFromName } from "@/lib/supabase/user/getUser";
+import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { client } from "@/lib/supabase/client";
 import { sha256 } from "@/lib/sha256";
 
 import User from "@/interface/user";
 
 export async function POST(req: Request): Promise<Response> {
-    const user: User = await req.json(); // { name, password }
+    const user: any = await req.json(); // { name, password }
 
     const name = user.name;
     const uuid: string = randomUUID().toString();
@@ -31,16 +31,12 @@ export async function POST(req: Request): Promise<Response> {
             });
 
         if (!error) {
-            return await ApiResponse(
-                true,
-                'Success to create user'
-            );
+            return NextResponse.json({ message: 'Success to regist user' },{status: 200});
+        } else {
+            return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
         }
     }
     
 
-    return await ApiResponse(
-        false,
-        'Failed to regist user'
-    );
+    return NextResponse.json({ error: 'User Conflict' }, { status: 409 });
 }
