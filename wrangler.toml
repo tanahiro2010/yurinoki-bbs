@@ -1,0 +1,7 @@
+name = "yurinoki-bbs"
+compatibility_date = "2024-02-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "yurinoki-bbs"
+database_id = "14be0795-d53f-4303-bc95-2267ced783e7"
