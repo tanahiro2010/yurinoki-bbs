@@ -31,6 +31,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} bg-gray-100`}
       >
         {children}
+
+        <script src="//cdn.tailwindcss.com"></script>
       </body>
     </html>
   );

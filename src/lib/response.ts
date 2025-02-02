@@ -10,7 +10,8 @@ export async function ApiResponse(success: boolean, message: string, body?: any)
         {
             headers: {
                 'Content-type': 'application/json'
-            }
+            },
+            status: success ? 200 : 400
         }
     );
 }

@@ -7,20 +7,18 @@ import { client } from "@/lib/supabase/client";
 import { sha256 } from "@/lib/sha256";
 
 import User from "@/interface/user";
-import Role from "@/types/role";
 
 export async function POST(req: Request): Promise<Response> {
     const user: User = await req.json(); // { name, password }
 
-    const name = user.user_id;
+    const name = user.name;
+    const uuid: string = randomUUID().toString();
     const password: string = await sha256(
         (user.password ? (
             user.password.length >= 4 ? user.password : undefined) : undefined
         ) ?? 
-        randomUUID().toString()
+        uuid
     );
-
-    const role: Role = 'user';
     
     const userExists: User | undefined = await getUserFromName(name);
 
@@ -29,7 +27,6 @@ export async function POST(req: Request): Promise<Response> {
             .from('accounts')
             .insert({
                 name,
-                role,
                 password
             });
 
