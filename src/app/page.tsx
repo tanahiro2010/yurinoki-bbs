@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import CreateThreadAction from "@/actions/createThread";
+import ApiResponse from "@/interface/response";
 import Header from "@/components/ui/Header";
 import Thread from "@/interface/thread";
 import Link from "next/link";
@@ -11,7 +12,19 @@ export default function Home() {
   const [threads, setThreads] = useState<Thread[]>([]);
 
   useEffect(() => {
+    const getUserSelfThread = (async () => {
+      const response: Response = await fetch('/api/v1/thread?filter=myself');
+      const data: ApiResponse = await response.json();
 
+      if (data.success) {
+        setThreads(data.body);
+      } else {
+        alert('最新のスレッドの取得に失敗しました');
+      }
+    });
+
+
+    getUserSelfThread();
   }, []);
 
   return (
@@ -49,7 +62,7 @@ export default function Home() {
             return (
               <Link href={`/thread/${thread.thread_id}`}>
                 <div className="border w-full rounded-md px-2 py-2 text-center items-center mt-3 hover:bg-gray-100 ">
-                  { thread.name }
+                  { thread.name } - 更新日時: { new Date(thread.update_date).toUTCString() }
                 </div>
               </Link>
             );
