@@ -17,7 +17,7 @@ export async function GET(): Promise<Response> {
             .single();
 
         if (!error) {
-            return NextResponse.json({ success: true, message: 'You logged in', userId: data.user_id }, { status: 200 })
+            return NextResponse.json({ success: true, message: 'You logged in', body: { user_id: data.user_id } }, { status: 200 })
             
         } else return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

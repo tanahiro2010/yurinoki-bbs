@@ -10,73 +10,87 @@ import Comment from "@/interface/comment";
 import Session from "@/interface/session";
 import Thread from "@/interface/thread";
 import User from "@/interface/user";
+import { Herr_Von_Muellerhoff, Love_Light } from "next/font/google";
 
 
 export async function GET(req: Request): Promise<Response> {    // Threadを取得 完成
     const { searchParams } = new URL(req.url);
+    const type: string = searchParams.get('type') ?? 'thread';
     const target: string = searchParams.get('filter') ?? '*';   // * 全て myself ユーザーのだけ othor ID指定
 
-    switch (target) {
-        case '*': // すべて取得
-            const { data, error } = await client
-                .from('threads')
-                .select('*');
-
-            if (error) return await ApiResponse(false, 'Failed to get threads', { error: error.message });
-            return await ApiResponse(true, 'Success to get threads', data.sort((a, b) => b.update_date - a.update_date));
-            break;
-
-        case 'myself': // 自身の作成したものだけ取得
-            const authResult: Session | false = await Auth();
-
-            if (authResult) {
-                const userId: string = authResult.user_id;
-
+    if (type == 'thread') {
+        switch (target) {
+            case '*': // すべて取得
                 const { data, error } = await client
                     .from('threads')
-                    .select('*')
-                    .eq('author_id', userId);
-
+                    .select('*');
+    
                 if (error) return await ApiResponse(false, 'Failed to get threads', { error: error.message });
                 return await ApiResponse(true, 'Success to get threads', data.sort((a, b) => b.update_date - a.update_date));
-            }
-
-            return await ApiResponse(
-                false,
-                'You not logged in'
-            );
-            break;
-
-        default:
-            const threadId: string | null = searchParams.get('thread');
-
-            if (threadId) {
-                const { data, error } = await client
-                    .from('threads')
-                    .select('*')
-                    .eq('thread_id', threadId)
-                    .single();
-
-                if (error) return await ApiResponse(
-                    false,
-                    'Internal Server Error',
-                    { message: error.message }
-                );
-
+                break;
+    
+            case 'myself': // 自身の作成したものだけ取得
+                const authResult: Session | false = await Auth();
+    
+                if (authResult) {
+                    const userId: string = authResult.user_id;
+    
+                    const { data, error } = await client
+                        .from('threads')
+                        .select('*')
+                        .eq('author_id', userId);
+    
+                    if (error) return await ApiResponse(false, 'Failed to get threads', { error: error.message });
+                    return await ApiResponse(true, 'Success to get threads', data.sort((a, b) => b.update_date - a.update_date));
+                }
+    
                 return await ApiResponse(
-                    true,
-                    'Success to get thread data',
-                    data
+                    false,
+                    'You not logged in'
                 );
-            }
+                break;
+    
+            default:
+                if (target) {
+                    const { data, error } = await client
+                        .from('threads')
+                        .select('*')
+                        .eq('thread_id', target)
+                        .single();
+    
+                    if (error) return await ApiResponse(
+                        false,
+                        'Internal Server Error',
+                        { message: error.message }
+                    );
+    
+                    return await ApiResponse(
+                        true,
+                        'Success to get thread data',
+                        data
+                    );
+                }
+    
+                return await ApiResponse(
+                    false,
+                    'Failed to get thread data'
+                );
+                break;
+    
+        }
+    } else if (type == 'comment') {
+        const { data, error } = await client
+            .from('comments')
+            .select('*')
+            .eq('thread_id', target);
 
-            return await ApiResponse(
-                false,
-                'Failed to get thread data'
-            );
-            break;
-
+        if (!error) return await ApiResponse(
+            true,
+            'Success to get comment',
+            data
+        );
     }
+    
 
     return await ApiResponse(
         false,
@@ -131,7 +145,35 @@ export async function POST(req: Request): Promise<Response> {   // Threadを作�
 }
 
 export async function PUT(req: Request): Promise<Response> {    // Threadにコメント投稿 TODO: Complite here
+    const authResult: Session | false = await Auth();
+
+    if (authResult) {
+        const data = await req.json();
+        const keys: string[] = Object.keys(data);
+
+        if (keys.includes('thread_id'), keys.includes('text')) {
+            
+        }
+    }
+    
+    return await ApiResponse(
+        false,
+        'Failed to send comment.'
+    );
 }
 
 export async function DELETE(req: Request): Promise<Response> { // Threadかコメント削除
+    const data = await req.json();
+    const authResult: Session | false = await Auth();
+
+    if (data.type == 'thread') {
+
+    } else if (data.type == 'comment') {
+        
+    }
+
+    return await ApiResponse(
+        false,
+        'Failed to get comments'
+    );
 }
