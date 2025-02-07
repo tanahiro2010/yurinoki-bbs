@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import CreateThreadAction from "@/actions/createThread";
 import ApiResponse from "@/interface/response";
 import roleLevel from "@/data/roleLevel";
 import Header from "@/components/ui/Header";
@@ -14,7 +13,7 @@ const needLevel: number = 1;
 
 export default function Home() {
   const [threads, setThreads] = useState<Thread[]>([]);
-  const [userLevel, setUserLevel] = useState<number | null>(null);
+  const [view, setView] = useState<string>('*');
 
   useEffect(() => {
     const authUserPermission = async () => {
@@ -24,7 +23,6 @@ export default function Home() {
       if (data.success && data.body) {
         const role: Role = data.body.role;
         const level = roleLevel[role];
-        setUserLevel(level); // userLevel の更新
 
         console.log(level);
         console.log(needLevel >= level);
@@ -46,7 +44,11 @@ export default function Home() {
       const isAuthorized = await authUserPermission();
       if (!isAuthorized) return;
 
-      const response: Response = await fetch('/api/v1/thread?filter=*');
+      const { searchParams } = new URL(window.location.href);
+      const target: string = searchParams.get('view') ?? '*';
+      setView(target);
+      
+      const response: Response = await fetch(`/api/v1/thread?filter=${target}`);
       const data: ApiResponse = await response.json();
 
       if (data.success) {
@@ -66,35 +68,8 @@ export default function Home() {
     <div className="mt-5 flex">
       <div className="w-1/5"></div>
       <div className="w-full">
-        <div className="text-center text-3xl">
-          Dashboard
-        </div>
-
-        <div className="mt-3 bg-white rounded-md px-5 py-5">
-          <button 
-            onClick={CreateThreadAction} 
-            className="border w-full rounded-md px-2 py-2 hover:bg-gray-100" >
-              スレッドを作成
-          </button><br />
-
-          <Link href={`/threads?view=myself`}>
-            <div className="border w-full rounded-md px-2 py-2 text-center items-center mt-3 hover:bg-gray-100 ">
-              自身の作成したスレッド
-            </div>
-          </Link>
-
-          { userLevel ? (userLevel >= 3 ? (
-            <Link href={`/admin`}>
-              <div className="border w-full rounded-md px-2 py-2 text-center items-center mt-3 hover:bg-gray-100 ">
-                管理ボード
-              </div>
-            </Link>
-          ) : null) : null }
-          
-        </div>
-
         <div className="text-center text-3xl mt-5">
-          最近更新されたスレッド
+          スレッド一覧 - { view == 'myself' ? 'ユーザー作成' : '全て' }
         </div>
 
         <div className="mt-3 bg-white rounded-md px-5 py-5">

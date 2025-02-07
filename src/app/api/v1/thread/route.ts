@@ -2,7 +2,9 @@
 
 import { getUserFromUserId } from "@/lib/supabase/user/getUser";
 import { ApiResponse } from "@/lib/response";
+import { getComments } from "@/lib/supabase/thread/getComments";
 import { randomUUID } from "crypto";
+import { getThread } from "@/lib/supabase/thread/getThread";
 import { client } from "@/lib/supabase/client";
 import { Auth } from "@/lib/auth";
 
@@ -10,8 +12,6 @@ import Comment from "@/interface/comment";
 import Session from "@/interface/session";
 import Thread from "@/interface/thread";
 import User from "@/interface/user";
-import { Herr_Von_Muellerhoff, Love_Light } from "next/font/google";
-
 
 export async function GET(req: Request): Promise<Response> {    // Threadを取得 完成
     const { searchParams } = new URL(req.url);
@@ -144,15 +144,42 @@ export async function POST(req: Request): Promise<Response> {   // Threadを作�
     );
 }
 
-export async function PUT(req: Request): Promise<Response> {    // Threadにコメント投稿 TODO: Complite here
+export async function PUT(req: Request): Promise<Response> {    // Threadにコメント投稿 完成
     const authResult: Session | false = await Auth();
 
     if (authResult) {
         const data = await req.json();
         const keys: string[] = Object.keys(data);
 
-        if (keys.includes('thread_id'), keys.includes('text')) {
-            
+        if (keys.includes('thread_id') && keys.includes('text')) {
+            const threadId: string = data.thread_id;
+            const thread: Thread | undefined = await getThread(threadId);
+
+            if (thread) {
+                const comments: Comment[] | undefined = await getComments(threadId);
+                
+                if (comments) {
+                    const comment: Comment = {
+                        thread_id: threadId,
+                        comment_no: comments.length + 1,
+                        author_id: authResult.user_id,
+
+                        name: data.name ?? '風吹けば名無し',
+                        text: data.text
+                    }
+                    const { error } = await client
+                        .from('comments')
+                        .insert( comment );
+
+                    if (!error) {
+                        return await ApiResponse(
+                            true,
+                            'Success to send message'
+                        );
+                    }
+                }
+                
+            }
         }
     }
     
@@ -167,7 +194,9 @@ export async function DELETE(req: Request): Promise<Response> { // Threadかコ�
     const authResult: Session | false = await Auth();
 
     if (data.type == 'thread') {
-
+        if (Object.keys(data).includes('thread_id')) {
+            const threadId: string = data.thread_id;
+        }
     } else if (data.type == 'comment') {
         
     }

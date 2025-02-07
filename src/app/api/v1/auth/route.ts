@@ -19,8 +19,8 @@ export async function GET(): Promise<Response> {
         if (!error) {
             return NextResponse.json({ success: true, message: 'You logged in', body: { user_id: data.user_id } }, { status: 200 })
             
-        } else return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        } else return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
-    return NextResponse.json({ error: 'Invalid Request' }, { status: 400 });
+    return NextResponse.json({ success: false, error: 'Invalid Request' }, { status: 400 });
 }

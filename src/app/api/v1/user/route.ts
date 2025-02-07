@@ -27,21 +27,21 @@ export async function GET(req: Request): Promise<Response> {
     }
 
     const { data, error } = await client
-            .from('accounts')
-            .select('*')
-            .eq('user_id', userId)
-            .single();
+        .from('accounts')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
     if (!error && data) {
         delete data.password;
-        return await ApiResponse(
+        return ApiResponse(
             true,
             'Success to get user data.',
             data
         );
     }
 
-    return await ApiResponse(
+    return ApiResponse(
         false,
         'Failed to get user data.'
     );
