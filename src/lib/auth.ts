@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { client } from "./supabase/client";
 
 import Session from "@/interface/session";
-import User from "@/interface/user";
 
 export async function Auth(): Promise<Session | false> {
     const cookieStore = await cookies();

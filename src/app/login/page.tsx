@@ -49,12 +49,14 @@ export default function Login(): ReactElement {
                                 placeholder="name"
                                 className="mt-2 px-2 py-2 border rounded w-full"
                                 ref={nameRef}
+                                required
                             /> <br />
                             <input 
                                 type="password"
                                 placeholder="password"
                                 className="mt-2 px-2 py-2 border rounded w-full"
                                 ref={passwordRef}
+                                required
                             /> <br />
 
                             <div className="text-center mt-5">

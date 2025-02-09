@@ -23,6 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!threadId) return; // threadId が未定義の場合は実行しない
+    setHandleNameValue(window.localStorage.getItem('handleName') ?? '風吹けば名無し');
 
     const getComments = (async () => {
       const response: Response = await fetch(`/api/v1/thread?filter=${threadId}&type=comment`);;
@@ -99,8 +100,10 @@ export default function Home() {
                     type="text"
                     placeholder="ハンドルネーム"
                     value={handleNameValue}
+                    ref={handleNameRef}
                     onChange={(e) => {
                       setHandleNameValue(handleNameRef.current?.value ?? "" + e.target.value);
+                      window.localStorage.setItem('handleName', handleNameValue);
                     }}
                     className="w-full px-3 py-2 border rounded-md"
                   />

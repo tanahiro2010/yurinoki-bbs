@@ -12,6 +12,8 @@ export default async function sendMessage(threadId: string, name: string, text: 
             }
         });
         const data: ApiResponse = await response.json();
+
+        window.localStorage.setItem('handleName', name);
     
         if (data.success) {
             alert('送信に成功しました');

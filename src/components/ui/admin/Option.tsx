@@ -1,32 +1,20 @@
 'use client';
 
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 
-import roleLevel from "@/data/roleLevel";
 import Link from "next/link";
-import Role from "@/types/role";
 
 interface Props {
-    needRole: Role;
-    userRole: Role;
-
-    href: string;
-    children?: any;
+    slug: string;
+    children: string;
 }
 
-export default function Option({ needRole, userRole, href, children }: Props): ReactElement {
-    useEffect(() => {
-        const needRoleLevel: number = roleLevel[needRole];
-        const userRoleLevel: number = roleLevel[userRole];
-
-        if (userRoleLevel < needRoleLevel) {
-            window.location.href = '/admin';
-        }
-    }, [needRole, userRole]);
-
+export default function Option({ slug, children }: Props): ReactElement {
     return (
-        <Link href={href} className={``}>
-            { children }
+        <Link href={`/admin/${slug}`} >
+            <div className={`mt-2 px-2 py-2 w-full border rounded-md hover:bg-gray-100`}>
+                { children }
+            </div>
         </Link>
     )
 }

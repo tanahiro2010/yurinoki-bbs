@@ -27,9 +27,8 @@ export default function Home() {
         setUserLevel(level); // userLevel の更新
 
         console.log(level);
-        console.log(needLevel >= level);
 
-        if (needLevel >= level) {
+        if (needLevel > level) {
           alert('貴方は認証されていません');
           document.cookie = 'session=;';
           window.location.href = '/login';
