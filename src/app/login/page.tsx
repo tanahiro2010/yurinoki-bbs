@@ -1,7 +1,7 @@
 'use client';
 export const runtime = 'edge';
 
-import { ReactElement, Ref, useRef } from "react";
+import { FormEvent, ReactElement, Ref, useRef } from "react";
 
 import LoginAction from "@/actions/login";
 import Header from "@/components/ui/Header";
@@ -43,7 +43,10 @@ export default function Login(): ReactElement {
                         必要事項を入力
                     </div>
 
-                    <form action={() => {LoginAction(nameRef.current?.value ?? '', passwordRef.current?.value ?? '')}} >
+                    <form onSubmit={(e: FormEvent) => {
+                        e.preventDefault();
+                        LoginAction(nameRef.current?.value ?? '', passwordRef.current?.value ?? '');
+                    }} >
                         <div className="items-center">
                             <input 
                                 type="text"
