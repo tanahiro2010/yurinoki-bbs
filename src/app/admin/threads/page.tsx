@@ -11,7 +11,6 @@ import Header from "@/components/ui/Header";
 import Thread from "@/interface/thread";
 import Role from "@/types/role";
 import User from "@/interface/user";
-import { threadId } from "worker_threads";
 
 
 export default function ThreadAdmin(): ReactElement {

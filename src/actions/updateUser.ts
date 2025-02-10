@@ -52,7 +52,7 @@ export async function deleteUser(userId: string) {
         const data: ApiResponse = await response.json();
 
         if (data.success) {
-            toast.success('ユーザーの削除に成功しました');
+            window.location.reload();
         } else {
             toast.error('ユーザーの削除に失敗しました');
         }

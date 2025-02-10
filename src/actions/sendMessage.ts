@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from "sonner";
+
 import ApiResponse from "@/interface/response";
 
 export default async function sendMessage(threadId: string, name: string, text: string | undefined) {
@@ -19,9 +21,9 @@ export default async function sendMessage(threadId: string, name: string, text: 
             alert('送信に成功しました');
             window.location.reload();
         } else {
-            alert('送信に失敗しました');
+            toast.error('送信に失敗しました');
         }
     } else {
-        alert('2文字以上は入力してください');
+        toast.error('2文字以上は入力してください');
     }
 }

@@ -77,11 +77,13 @@ export default function Home() {
                 <CommentEle 
                   key={index}
                   no={comment.comment_no}
+                  authorId={comment.author_id}
                   handleName={comment.name}
                   text={comment.text}
                   threadId={threadId}
                   textRef={textRef}
                   setText={setTextValue}
+                  createdAt={comment.created_at ?? ""}
                 />
               )
             })}

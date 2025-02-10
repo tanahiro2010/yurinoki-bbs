@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from "sonner";
+
 export default async function RegistAction(name: string, password: string) {
     const response: Response = await fetch('/api/v1/register', {
         method: 'POST',
@@ -12,6 +14,6 @@ export default async function RegistAction(name: string, password: string) {
     if (response.ok) {
         window.location.href = '/login';
     } else {
-        alert('登録に失敗しました' + response.status);
+        toast.error('登録に失敗しました' + response.status);
     }
 }
