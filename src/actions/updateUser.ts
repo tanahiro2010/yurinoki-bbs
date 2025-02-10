@@ -42,6 +42,19 @@ export async function updateName(userId: string, name: string) {
 
 export async function deleteUser(userId: string) {
     if (confirm('本当に削除しますか？')) {
-        
+        const response: Response = await fetch('/api/v1/user', {
+            method: 'DELETE',
+            body: JSON.stringify({ user_id: userId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data: ApiResponse = await response.json();
+
+        if (data.success) {
+            toast.success('ユーザーの削除に成功しました');
+        } else {
+            toast.error('ユーザーの削除に失敗しました');
+        }
     }
 }

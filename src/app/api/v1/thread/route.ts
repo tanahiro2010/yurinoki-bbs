@@ -12,6 +12,7 @@ import Comment from "@/interface/comment";
 import Session from "@/interface/session";
 import Thread from "@/interface/thread";
 import User from "@/interface/user";
+import roleLevel from "@/data/roleLevel";
 
 export async function GET(req: Request): Promise<Response> {    // Threadを取得 完成
     const { searchParams } = new URL(req.url);
@@ -193,12 +194,38 @@ export async function DELETE(req: Request): Promise<Response> { // Threadかコ�
     const data = await req.json();
     const authResult: Session | false = await Auth();
 
-    if (data.type == 'thread') {
-        if (Object.keys(data).includes('thread_id')) {
-            const threadId: string = data.thread_id;
+    if (authResult) {
+        const user: User | undefined = await getUserFromUserId(authResult.user_id);
+
+        if (user && roleLevel[user.role] >= roleLevel.operator) {
+            const threadId = data.thread_id;
+            const deleteCommentResult = await (async () => {
+                const { error } = await client
+                    .from('comments')
+                    .delete()
+                    .eq('thread_id', threadId);
+
+                return error ? false : true;
+            })();
+
+            if (deleteCommentResult) {
+                const deleteThreadResult = await (async () => {
+                    const { error } = await client
+                        .from('threads')
+                        .delete()
+                        .eq('thread_id', threadId);
+
+                    return error ? false : true;
+                })();
+
+                if (deleteThreadResult) {
+                    return await ApiResponse(
+                        true,
+                        'Success to delete thread.'
+                    );
+                }
+            }
         }
-    } else if (data.type == 'comment') {
-        
     }
 
     return await ApiResponse(

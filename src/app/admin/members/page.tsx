@@ -10,7 +10,7 @@ import Header from "@/components/ui/Header";
 import Role from "@/types/role";
 import User from "@/interface/user";
 
-export default function Admin(): ReactElement {
+export default function MembersAdmin(): ReactElement {
     const [userRole, setUserRole] = useState<Role>('deleter');
     const [users, setUsers] = useState<User[]>([]);
     const [editedNames, setEditedNames] = useState<{ [key: string]: string }>({});

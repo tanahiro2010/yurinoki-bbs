@@ -34,7 +34,7 @@ export default function Sidebar({ userRole }: Props): ReactElement {
                     ユーザー認証
                 </Option>
 
-                <Option slug="delete">
+                <Option slug="threads">
                     スレッド管理
                 </Option>
             </Category>

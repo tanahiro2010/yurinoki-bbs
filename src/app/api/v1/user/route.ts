@@ -110,3 +110,63 @@ export async function PUT(req: Request): Promise<Response> {
         'Failed to update user'
     );
 }
+
+export async function DELETE(req: Request): Promise<Response> {
+    const session: Session | false = await Auth();
+
+    if (session) {
+        const user: User | undefined = await getUserFromUserId(session.user_id);
+
+        if (user && user.role == "admin") {
+            const data = await req.json();
+            const userId: string = data.user_id;
+
+            const deleteUserResult = await (async (): Promise<boolean> => {
+                const { error } = await client
+                    .from('accounts')
+                    .delete()
+                    .eq('user_id', userId);
+
+                if (error) return false;
+                return true;
+            })();
+
+            if (deleteUserResult) {
+                const deleteThreadsResult = await (async (): Promise<boolean> => {
+                    const { error } = await client
+                        .from('threads')
+                        .delete()
+                        .eq('author_id', userId);
+
+                    if (error) return false;
+                    return true;
+                })();
+
+                if (deleteThreadsResult) {
+                    const sessionDeleteResult = await (async (): Promise<boolean> => {
+                        const { error } = await client
+                            .from('sessions')
+                            .delete()
+                            .eq('user_id', userId);
+
+                        if (error) return false;
+                        return true;
+                    })();
+
+                    if (sessionDeleteResult) {
+                        return ApiResponse(
+                            true,
+                            'Success to delete user'
+                        );
+                    }
+                }
+            }
+            
+        }
+    }
+
+    return ApiResponse(
+        false,
+        'Failed to delete user'
+    );
+}
