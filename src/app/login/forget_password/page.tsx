@@ -1,6 +1,7 @@
 'use client';
+export const runtime = 'edge';
 
-import { ReactElement, Ref, useRef } from "react";
+import { ReactElement } from "react";
 
 import Header from "@/components/ui/Header";
 import A from "@/components/ui/A";
