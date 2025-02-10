@@ -1,7 +1,0 @@
-name = "yurinoki-bbs"
-type = "javascript"
-
-[build]
-command = "npx @cloudflare/next-on-pages"
-upload_format = "modules"
-pages_build_output_dir = ".vercel/output/static"  # Cloudflare Pages に対応
