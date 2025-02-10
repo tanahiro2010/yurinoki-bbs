@@ -9,7 +9,7 @@ import { sha256 } from "@/lib/sha256";
 import User from "@/interface/user";
 
 export async function POST(req: Request): Promise<Response> {
-    const user: any = await req.json(); // { name, password }
+    const user = await req.json(); // { name, password }
 
     const name = user.name;
     const uuid: string = randomUUID().toString();
