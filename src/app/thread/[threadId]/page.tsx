@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, Ref } from "react";
+import { useEffect, useState, useRef, Ref, RefObject } from "react";
 import { useParams } from "next/navigation";
 
 import sendMessage from "@/actions/sendMessage";
@@ -81,7 +81,7 @@ export default function Home() {
                   handleName={comment.name}
                   text={comment.text}
                   threadId={threadId}
-                  textRef={textRef}
+                  textRef={textRef as RefObject<HTMLTextAreaElement>}
                   setText={setTextValue}
                   createdAt={comment.created_at ?? ""}
                 />
