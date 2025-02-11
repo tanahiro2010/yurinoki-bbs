@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
+import Advertise from "@/components/ui/advertise";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
         {children}
 
         <Toaster />
+        <Advertise />
         <script src="//cdn.tailwindcss.com"></script>
       </body>
     </html>
