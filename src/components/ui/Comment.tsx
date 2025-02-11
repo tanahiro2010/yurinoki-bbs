@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, Ref } from "react";
+import { ReactElement, RefObject } from "react";
 
 import ReactMarkdown from 'react-markdown';
 
@@ -10,7 +10,7 @@ interface CommentProps {
     authorId:   string;
     text:       string;
     threadId:   string;
-    textRef:    Ref<HTMLTextAreaElement>;
+    textRef:    RefObject<HTMLTextAreaElement>;
     setText:    Function;
     createdAt:  string;
 }
@@ -22,7 +22,9 @@ function convertFormat(text: string, threadId: string) {
 export default function CommentEle({ no, handleName, authorId, text, threadId, textRef, setText, createdAt }: CommentProps): ReactElement {
     return (
         <div id={no.toString()} className="border rounded-md px-2 py-2 mt-2" onClick={() => {
-            setText(textRef.current.value += `>>${no}`)
+            if (textRef) {
+                setText(textRef.current.value += `>>${no}`);
+            }
         }}>
             <div className="flex justify-between">
                 <div className="rounded px-2">
