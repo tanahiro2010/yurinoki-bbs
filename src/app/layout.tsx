@@ -24,7 +24,9 @@ export default function RootLayout({
 
         <Toaster />
         <script src="//cdn.tailwindcss.com"></script>
-        <script src="https://adm.shinobi.jp/s/4aebe568090b6be9c4c1a7ff6b40bff1"></script>
+        <div className="text-center mt-5">
+          <script src="https://adm.shinobi.jp/s/4aebe568090b6be9c4c1a7ff6b40bff1"></script>
+        </div>
       </body>
     </html>
   );
