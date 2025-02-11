@@ -15,7 +15,7 @@ export default async function deleteSession(token: string) {
     const data: ApiResponse = await response.json();
 
     if (data.success) {
-        window.location.href = '/admin/threads?success=delete';
+        window.location.href = '/admin/sessions?success=delete';
     } else {
         toast.error('セッションの削除に失敗しました');
     }
