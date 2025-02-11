@@ -173,10 +173,21 @@ export async function PUT(req: Request): Promise<Response> {    // Threadにコ�
                         .insert( comment );
 
                     if (!error) {
-                        return await ApiResponse(
-                            true,
-                            'Success to send message'
-                        );
+                        const updateResult = await (async (): Promise<boolean> => {
+                            const { error } = await client
+                                .from('threads')
+                                .update({ update_date: Date.now() })
+                                .eq('thread_id', threadId);
+    
+                            return error ? false : true;
+                        })();
+    
+                        if (updateResult) {
+                            return await ApiResponse(
+                                true,
+                                'Success to send message'
+                            );
+                        }
                     }
                 }
                 
