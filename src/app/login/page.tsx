@@ -1,5 +1,4 @@
 'use client';
-export const runtime = 'edge';
 
 import { FormEvent, ReactElement, Ref, useRef } from "react";
 
